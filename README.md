@@ -33,11 +33,11 @@ All interactions with both DuckDB and MotherDuck are done through writing SQL qu
 ### General Prerequisites
 - `uv` installed, you can install it using `pip install uv` or `brew install uv`
 
-If you plan to use the MCP with Claude Desktop or any other MCP comptabile client, the client need to be installed. 
+If you plan to use the MCP with Claude Desktop or any other MCP comptabile client, the client need to be installed.
 
 ### Prerequisites for DuckDB
 
-- No prerequisites. The MCP server can create an in-memory database on-the-fly 
+- No prerequisites. The MCP server can create an in-memory database on-the-fly
 - Or connect to an existing local DuckDB database file , or one stored on remote object storage (e.g., AWS S3).
 
 See [Connect to local DuckDB](#connect-to-local-duckdb).
@@ -54,7 +54,7 @@ See [Connect to local DuckDB](#connect-to-local-duckdb).
 
 2. Open Cursor:
 
-- To set it up globally for the first time, go to Settings->MCP and click on "+ Add new global MCP server". 
+- To set it up globally for the first time, go to Settings->MCP and click on "+ Add new global MCP server".
 - This will open a `mcp.json` file to which you add the following configuration:
 
 ```json
@@ -173,7 +173,7 @@ Optionally, you can add it to a file called `.vscode/mcp.json` in your workspace
 
 If the MCP server is exposed to third parties and should only have read access to data, we recommend using a read scaling token and running the MCP server in SaaS mode.
 
-**Read Scaling Tokens** are special access tokens that enable scalable read operations by allowing up to 4 concurrent read replicas, improving performance for multiple end users while *restricting write capabilities*. 
+**Read Scaling Tokens** are special access tokens that enable scalable read operations by allowing up to 4 concurrent read replicas, improving performance for multiple end users while *restricting write capabilities*.
 Refer to the [Read Scaling documentation](https://motherduck.com/docs/key-tasks/authenticating-and-connecting-to-motherduck/read-scaling/#creating-a-read-scaling-token) to learn how to create a read-scaling token.
 
 **SaaS Mode** in MotherDuck enhances security by restricting it's access to local files, databases, extensions, and configurations, making it ideal for third-party tools that require stricter environment protection. Learn more about it in the [SaaS Mode documentation](https://motherduck.com/docs/key-tasks/authenticating-and-connecting-to-motherduck/authenticating-to-motherduck/#authentication-using-saas-mode).
@@ -294,10 +294,10 @@ To run the server from a local development environment, use the following config
     "mcp-server-motherduck": {
       "command": "uv",
       "args": [
-        "--directory", 
-        "/path/to/your/local/mcp-server-motherduck", 
-        "run", 
-        "mcp-server-motherduck", 
+        "--directory",
+        "/path/to/your/local/mcp-server-motherduck",
+        "run",
+        "mcp-server-motherduck",
         "--db-path",
         "md:",
         "--motherduck-token",
@@ -308,6 +308,57 @@ To run the server from a local development environment, use the following config
 }
 ```
 
+## Usage with Augment Code
+
+Augment Code is a powerful AI coding assistant that can integrate with the MCP server to provide SQL analytics capabilities. To use this fork of the MCP server with Augment Code:
+
+1. **Install the MCP server directly from GitHub**:
+
+   ```bash
+   uvx --with git+https://github.com/yan-hic/mcp-server-motherduck.git --link-mode=copy mcp-server-motherduck --db-path :memory:
+   ```
+
+   This command:
+   - Uses `uvx` to run the MCP server
+   - Installs this fork directly from GitHub using the `--with` option
+   - Uses `--link-mode=copy` to avoid hardlink issues
+   - Runs with an in-memory database
+
+2. **For MotherDuck integration**, add your token:
+
+   ```bash
+   uvx --with git+https://github.com/yan-hic/mcp-server-motherduck.git --link-mode=copy mcp-server-motherduck --db-path md: --motherduck-token <YOUR_MOTHERDUCK_TOKEN>
+   ```
+
+3. **Configure Augment Code**:
+
+   In Augment Code, add the MCP server configuration to use this fork:
+
+   ```json
+   {
+     "mcpServers": {
+       "mcp-server-motherduck": {
+         "command": "uvx",
+         "args": [
+           "--with",
+           "git+https://github.com/yan-hic/mcp-server-motherduck.git",
+           "--link-mode=copy",
+           "mcp-server-motherduck",
+           "--db-path",
+           ":memory:"
+         ]
+       }
+     }
+   }
+   ```
+
+### Key Features of This Fork
+
+- Uses duckbox as the default format instead of markdown
+- Removed pandas dependency for lighter installation
+- Includes tabulate for proper formatting of query results
+- No size constraints on query results
+
 ## Troubleshooting
 
 - If you encounter connection issues, verify your MotherDuck token is correct
@@ -315,6 +366,7 @@ To run the server from a local development environment, use the following config
 - Check that the `uvx` command is available in your PATH
 - If you encounter [`spawn uvx ENOENT`](https://github.com/motherduckdb/mcp-server-motherduck/issues/6) errors, try specifying the full path to `uvx` (output of `which uvx`)
 - In version previous for v0.4.0 we used environment variables, now we use parameters
+- If you encounter hardlink issues, make sure to use the `--link-mode=copy` option
 
 ## License
 
