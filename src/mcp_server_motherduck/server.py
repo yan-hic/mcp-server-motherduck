@@ -22,7 +22,11 @@ class DatabaseClient:
         self,
         db_path: str | None = None,
         motherduck_token: str | None = None,
+<<<<<<< HEAD
         result_format: Literal["duckbox", "text"] = "duckbox",
+=======
+        result_format: Literal["markdown", "duckbox", "text"] = "duckbox",
+>>>>>>> b2f3718f1eca2eea2d4081b05da8c79c65c7012d
         home_dir: str | None = None,
         saas_mode: bool = False,
     ):
@@ -95,7 +99,18 @@ class DatabaseClient:
                 f"🔍 Executing query: {query[:60]}{'...' if len(query) > 60 else ''}"
             )
 
+<<<<<<< HEAD
             if self.result_format == "duckbox":
+=======
+            if self.result_format == "markdown":
+                # Markdown version of the output - using duckbox instead since pandas is removed
+                buffer = io.StringIO()
+                with redirect_stdout(buffer):
+                    self.conn.sql(query).show()
+                logger.info("✅ Query executed successfully")
+                return buffer.getvalue()
+            elif self.result_format == "duckbox":
+>>>>>>> b2f3718f1eca2eea2d4081b05da8c79c65c7012d
                 # Duckbox version of the output
                 buffer = io.StringIO()
                 with redirect_stdout(buffer):
@@ -112,7 +127,11 @@ class DatabaseClient:
 async def main(
     db_path: str,
     motherduck_token: str | None = None,
+<<<<<<< HEAD
     result_format: Literal["duckbox", "text"] = "duckbox",
+=======
+    result_format: Literal["markdown", "duckbox", "text"] = "duckbox",
+>>>>>>> b2f3718f1eca2eea2d4081b05da8c79c65c7012d
     home_dir: str | None = None,
     saas_mode: bool = False,
 ):
