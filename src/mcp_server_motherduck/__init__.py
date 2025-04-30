@@ -34,9 +34,9 @@ def main():
     # This is experimental and will change in the future
     parser.add_argument(
         "--result-format",
-        help="(Default: `markdown`) Format of the query result",
-        default="markdown",
-        choices=["markdown", "duckbox", "text"],
+        help="(Default: `duckbox`) Format of the query result",
+        default="duckbox",
+        choices=["duckbox", "text"],
     )
 
     args = parser.parse_args()
