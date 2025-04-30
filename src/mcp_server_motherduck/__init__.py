@@ -36,11 +36,7 @@ def main():
         "--result-format",
         help="(Default: `duckbox`) Format of the query result",
         default="duckbox",
-<<<<<<< HEAD
-        choices=["duckbox", "text"],
-=======
         choices=["markdown", "duckbox", "text"],
->>>>>>> b2f3718f1eca2eea2d4081b05da8c79c65c7012d
     )
 
     args = parser.parse_args()
